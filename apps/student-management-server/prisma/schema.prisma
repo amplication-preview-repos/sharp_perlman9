@@ -1,0 +1,68 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Student {
+  attendanceRecords AttendanceRecord[]
+  createdAt         DateTime           @default(now())
+  firstName         String?
+  id                String             @id @default(cuid())
+  lastName          String?
+  patronymic        String?
+  updatedAt         DateTime           @updatedAt
+}
+
+model AttendanceRecord {
+  classField   ClassModel?                 @relation(fields: [classFieldId], references: [id])
+  classFieldId String?
+  createdAt    DateTime                    @default(now())
+  date         DateTime?
+  id           String                      @id @default(cuid())
+  status       EnumAttendanceRecordStatus?
+  student      Student?                    @relation(fields: [studentId], references: [id])
+  studentId    String?
+  updatedAt    DateTime                    @updatedAt
+}
+
+model ClassModel {
+  attendanceRecords AttendanceRecord[]
+  createdAt         DateTime           @default(now())
+  date              DateTime?
+  endTime           DateTime?
+  id                String             @id @default(cuid())
+  link              String?
+  name              String?
+  startTime         DateTime?
+  updatedAt         DateTime           @updatedAt
+}
+
+model Schedule {
+  createdAt DateTime  @default(now())
+  date      DateTime?
+  endTime   DateTime?
+  id        String    @id @default(cuid())
+  link      String?
+  startTime DateTime?
+  updatedAt DateTime  @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumAttendanceRecordStatus {
+  Option1
+}
